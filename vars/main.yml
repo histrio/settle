@@ -1,2 +1,5 @@
 ---
-# vars file for settle
+user: rinat
+public_keys:
+  - ~/.ssh/id_rsa.pub
+password: $1$SaltySal$utskfpBC/wVY00L1CtzqY0

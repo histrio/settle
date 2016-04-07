@@ -1,2 +1,18 @@
 ---
-# tasks file for settle
+- name: Create group based on 'user' variable 
+  group: name={{ user }} state=present
+
+- name: Install packages
+  yum: name={{ package }} state=latest
+  with_items:
+      - tmux
+      - zsh
+
+- name: Create user based on 'user' variable 
+  user: name={{ user }} password={{ password }} state=present group={{ user }} groups=sudo shell=/bin/zsh
+
+- name: Add authorized keys for deploy user
+  authorized_key: user={{ user }} key="{{ lookup('file', item) }}"
+  with_items: public_keys
+
+
