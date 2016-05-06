@@ -10,9 +10,16 @@
       - zsh
       - vim 
       - htop
+      - wget
+      - python-pip
+      - gcc
+      - libffi-devel
+      - python-devel
+      - openssl-devel
+      - git
 
-- name: Add authorized keys for deploy user
-  authorized_key: user={{ ansible_user }} key="{{ lookup('file', item) }}"
-  with_items: public_keys
-
-
+- name: Zsh configuration
+  get_url: url={{ item.url }} dest={{ item.dst }}
+  with_items:
+      - {url:http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc, dst: ~/.zshrc}
+      - {url:http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc, dst: ~/.zshrc.local}
