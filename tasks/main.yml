@@ -3,6 +3,9 @@
   become: centos
   yum: name=* state=latest
 
+- name: Install epel
+  yum: name=epel-release state=latest
+
 - name: Install packages
   yum: name={{ item }} state=latest
   with_items:
@@ -17,9 +20,10 @@
       - python-devel
       - openssl-devel
       - git
+      - mosh
 
 - name: Zsh configuration
   get_url: url={{ item.url }} dest={{ item.dst }}
   with_items:
-      - {url:http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc, dst: ~/.zshrc}
-      - {url:http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc, dst: ~/.zshrc.local}
+      - {url: "http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc", dst: ~/.zshrc}
+      - {url: "http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc", dst: ~/.zshrc.local}
