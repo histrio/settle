@@ -3,3 +3,7 @@ user: rinat
 public_keys:
   - ~/.ssh/id_rsa.pub
 password: $1$SaltySal$utskfpBC/wVY00L1CtzqY0
+vimrc_url: https://www.dropbox.com/s/1ef2ly4dzcak2p9/.vimrc?dl=1
+tmux_url: https://www.dropbox.com/s/xwy9cs2vca0jrnu/.tmux.conf?dl=1
+
+git_conf_url: https://www.dropbox.com/s/15rjnc0l7y0c487/.gitconfig?dl=1

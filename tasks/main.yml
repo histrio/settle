@@ -1,17 +1,29 @@
 ---
 - name: upgrade all packages
-  become: centos
   yum: name=* state=latest
 
 - name: Install epel
   yum: name=epel-release state=latest
+
+
+- name: Install yum-cron.
+  yum: name=yum-cron state=present
+
+- name: Ensure yum-cron is running and enabled on boot.
+  service: name=yum-cron state=started enabled=yes
+
+- name: Configure autoupdates
+  lineinfile:
+    dest: "/etc/yum/yum-cron.conf"
+    regexp: '^apply_updates = .+'
+    line: 'apply_updates = yes'
 
 - name: Install packages
   yum: name={{ item }} state=latest
   with_items:
       - tmux
       - zsh
-      - vim 
+      - vim
       - htop
       - wget
       - python-pip
@@ -21,9 +33,40 @@
       - openssl-devel
       - git
       - mosh
+      - fail2ban
+      - ctags
+      - tmux
 
-- name: Zsh configuration
-  get_url: url={{ item.url }} dest={{ item.dst }}
+- name: Ensure fail2ban is running and enabled on boot.
+  service: name=fail2ban state=started enabled=yes
+
+- name: Update SSH configuration to be more secure.
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
   with_items:
-      - {url: "http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc", dst: ~/.zshrc}
-      - {url: "http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc", dst: ~/.zshrc.local}
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin yes"
+    - regexp: "^Port"
+      line: "Port 22"
+    - regexp: "^UseDNS"
+      line: "UseDNS no"
+  notify: restart ssh
+
+- name: Add configured user accounts to passworded sudoers.
+  lineinfile:
+    dest: /etc/sudoers
+    regexp: '^{{ item }}'
+    line: '{{ item }} ALL=(ALL) ALL'
+    state: present
+    validate: 'visudo -cf %s'
+  with_items:
+    - "{{ user }}"
+
+- include: user.yml
+  become: yes
+  become_user: "{{ user }}"
