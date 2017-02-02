@@ -5,7 +5,6 @@
 - name: Install epel
   yum: name=epel-release state=latest
 
-
 - name: Install yum-cron.
   yum: name=yum-cron state=present
 
@@ -20,22 +19,11 @@
 
 - name: Install packages
   yum: name={{ item }} state=latest
-  with_items:
-      - tmux
-      - zsh
-      - vim
-      - htop
-      - wget
-      - python-pip
-      - gcc
-      - libffi-devel
-      - python-devel
-      - openssl-devel
-      - git
-      - mosh
-      - fail2ban
-      - ctags
-      - tmux
+  with_items: "{{ packages }}"
+
+- name: Install python modules
+  pip: name="{{ item }}"
+  with_items: "{{ python_packages }}"
 
 - name: Ensure fail2ban is running and enabled on boot.
   service: name=fail2ban state=started enabled=yes
