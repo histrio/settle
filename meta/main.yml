@@ -1,7 +1,7 @@
 galaxy_info:
   author: Rinat Sabitov
   description: Settling on server
-  company: 
+  company:
   license: license (GPLv2, CC-BY, etc)
   min_ansible_version: 1.2
   platforms:
@@ -11,8 +11,9 @@ galaxy_info:
       - name: Debian
         versions:
         - all
-  
+
   galaxy_tags:
       - initial
 
-dependencies: []
+dependencies:
+  - { role: ezamriy.fail2ban, fail2ban_ignoreip: '127.0.0.1/8 192.168.0.0/24' }

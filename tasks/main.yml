@@ -1,4 +1,3 @@
----
 - name: upgrade all packages
   yum: name=* state=latest
 
@@ -18,15 +17,15 @@
     line: 'apply_updates = yes'
 
 - name: Install packages
-  yum: name={{ item }} state=latest
+  yum: name={{ item }} state=latest enablerepo=epel
   with_items: "{{ packages }}"
 
 - name: Install python modules
   pip: name="{{ item }}"
   with_items: "{{ python_packages }}"
 
-- name: Ensure fail2ban is running and enabled on boot.
-  service: name=fail2ban state=started enabled=yes
+#- name: Ensure fail2ban is running and enabled on boot.
+  #service: name=fail2ban state=started enabled=yes
 
 - name: Update SSH configuration to be more secure.
   lineinfile:
@@ -44,6 +43,16 @@
     - regexp: "^UseDNS"
       line: "UseDNS no"
   notify: restart ssh
+
+- name: Update firewalld rules
+  firewalld:
+    service: "{{ item }}"
+    permanent: true
+    state: enabled
+  with_items:
+      - ssh
+      - mosh
+  notify: restart firewalld
 
 - name: Add configured user accounts to passworded sudoers.
   lineinfile:

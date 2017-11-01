@@ -5,19 +5,19 @@
   become_user: root
   user:
     name: "{{ user }}"
+    groups: wheel
     generate_ssh_key: yes
     ssh_key_bits: 2048
-    ssh_key_file: ~/.ssh/id_rsa
+    ssh_key_file: .ssh/id_rsa
     shell: /bin/zsh
-    update_password: on_create
 
 - name: Upload auth keys
   authorized_key:
     user: "{{ user }}"
-    key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+    key: "{{ lookup('file', '~/.ssh/one_pl.pub') }}"
 
 - name: Zsh configuration
-  get_url: url={{ item.url }} dest={{ item.dst }}
+  get_url: url={{ item.url }} dest={{ item.dst }} force=yes
   with_items:
       - {url: "http://git.grml.org/f/grml-etc-core/etc/zsh/zshrc", dst: ~/.zshrc}
       - {url: "http://git.grml.org/f/grml-etc-core/etc/skel/.zshrc", dst: ~/.zshrc.local}
@@ -37,4 +37,6 @@
       dest: ~/.vim/bundle/Vundle.vim
 
 - name: Install vim plugins
-  command: vim +PluginInstall +qall chdir=/tmp
+  command: vim +PluginInstall +qall chdir=/tmp 700fcc04-759d-4573-9c74-52d0464f4df7
+  register: result
+  no_log: True

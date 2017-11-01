@@ -19,7 +19,6 @@ packages:
   - openssl-devel
   - git
   - mosh
-  - fail2ban
   - ctags
   - iftop
   - iotop
@@ -28,7 +27,11 @@ packages:
   - lynis
   - rkhunter
   - ack
+  - firewalld
+  - the_silver_searcher
 python_packages:
   - bpython
   - virtualenv
   - pipsi
+  - ansible
+  - docker-compose
